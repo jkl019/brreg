@@ -1,7 +1,6 @@
 ﻿using CsvHelper;
 using CsvHelper.Configuration;
 using System.Globalization;
-using Customers;
 using brregApi;
 
 string filePath = Path.Combine(@"..\..\..\files\po-kunder.csv");
@@ -25,18 +24,16 @@ using (var csv = new CsvReader(reader, new CsvConfiguration(CultureInfo.Invarian
 
 foreach (var orgNo in orgNoList)
 {
-    string url = "https://data.brreg.no/enhetsregisteret/api/enheter/";
-    url = url + orgNo;
 
-    Customer customer = await ApiHelper.GetCustomerFromApi(url);
+    var customer = await ApiHelper.GetCustomerFromApi(orgNo);
 
     if (customer != null)
     {
-        Console.WriteLine($"OrgNummer: {customer.organisasjonsnummer}");
-        Console.WriteLine($"Name: {customer.navn}");
-        Console.WriteLine($"Antall Ansatte: {customer.antallAnsatte}");
-        Console.WriteLine($"Næringskode: {customer.naeringskode1.kode}");
-        Console.WriteLine($"Organisasjonsform: {customer.organisasjonsform.kode}");
+        Console.WriteLine($"OrgNummer: {customer?.OrgNumber}");
+        Console.WriteLine($"Name: {customer?.Name}");
+        Console.WriteLine($"Antall Ansatte: {customer?.Employees}");
+        Console.WriteLine($"Næringskode: {customer?.BusCode}");
+        Console.WriteLine($"Organisasjonsform: {customer?.OrgCode}");
     }
     else
     {

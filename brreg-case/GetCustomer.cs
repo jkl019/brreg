@@ -6,23 +6,27 @@ namespace brregApi {
     public static class ApiHelper
     {
         public static readonly HttpClient client = new HttpClient();
+        public static string url = "https://data.brreg.no/enhetsregisteret/api/enheter/";
 
-        public static async Task<Customer?> GetCustomerFromApi(string apiUrl)
+        public static async Task<Customer?> GetCustomerFromApi(string orgNo)
         {
+            string apiUrl = url + orgNo;
             try
             {
                 HttpResponseMessage response = await client.GetAsync(apiUrl);
                 response.EnsureSuccessStatusCode();
                 
                 string responseBody = await response.Content.ReadAsStringAsync();
-                Customer? customer = JsonSerializer.Deserialize<Customer>(responseBody);
-
-                if (customer?.slettedato != null)
+                if (responseBody != null)
                 {
-                    return null;
+                    Customer? customer = JsonSerializer.Deserialize<Customer>(responseBody);
+                    if (customer?.Deleted != null)
+                    {
+                        return null;
+                    }
+                    return customer;
                 }
-
-                return customer;
+                return null;
             }
             catch (HttpRequestException ex)
             {
