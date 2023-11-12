@@ -2,6 +2,7 @@
 using CsvHelper.Configuration;
 using System.Globalization;
 using brregApi;
+using Customers;
 
 string filePath = Path.Combine(@"..\..\..\files\po-kunder.csv");
 
@@ -21,7 +22,7 @@ using (var csv = new CsvReader(reader, new CsvConfiguration(CultureInfo.Invarian
         }
     }
 }
-
+var customersList = new List<Customer>();
 foreach (var orgNo in orgNoList)
 {
 
@@ -29,11 +30,7 @@ foreach (var orgNo in orgNoList)
 
     if (customer != null)
     {
-        Console.WriteLine($"OrgNummer: {customer?.OrgNumber}");
-        Console.WriteLine($"Name: {customer?.Name}");
-        Console.WriteLine($"Antall Ansatte: {customer?.Employees}");
-        Console.WriteLine($"Næringskode: {customer?.BusCode}");
-        Console.WriteLine($"Organisasjonsform: {customer?.OrgCode}");
+        customersList.Add(customer);
     }
     else
     {
@@ -41,3 +38,4 @@ foreach (var orgNo in orgNoList)
     }
 
 }
+Console.WriteLine(customersList.Count);
