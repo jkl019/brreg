@@ -22,16 +22,6 @@ namespace brregApi {
                 if (responseBody != null)
                 {
                     Customer? customer = JsonSerializer.Deserialize<Customer>(responseBody);
-                    if (customer?.Deleted != null)
-                    {
-                        _ = new Error(orgNo, response.StatusCode, "Deleted");
-                        return null;
-                    }
-                    if (customer?.Bankrupt == true)
-                    {
-                        _ = new Error(orgNo, response.StatusCode, "Bankrupt");
-                        return null;
-                    }
                     return customer;
                 }
                 _ = new Error(orgNo, response.StatusCode, "Empty response");

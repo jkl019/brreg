@@ -23,6 +23,7 @@ using (var csv = new CsvReader(reader, new CsvConfiguration(CultureInfo.Invarian
     }
 }
 var customersList = new List<Customer>();
+
 foreach (var orgNo in orgNoList)
 {
 
@@ -32,10 +33,11 @@ foreach (var orgNo in orgNoList)
     {
         customersList.Add(customer);
     }
-    else
-    {
-        Console.WriteLine("Failed to retrive data.");
-    }
 
 }
+string csvPath = @"po-kunder-ny.csv";
+using (var writer = new StreamWriter(csvPath))
+using (var csvWriter = new CsvWriter(writer, CultureInfo.InvariantCulture))
+csvWriter.WriteRecords(customersList);
+
 Console.WriteLine(customersList.Count);
