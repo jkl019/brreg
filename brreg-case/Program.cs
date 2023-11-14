@@ -8,6 +8,7 @@ string filePath = Path.Combine(@"..\..\..\files\po-kunder.csv");
 
 var orgNoList = new List<string>();
 
+Console.WriteLine("Reading " + filePath);
 using (var reader = new StreamReader(filePath))
 using (var csv = new CsvReader(reader, new CsvConfiguration(CultureInfo.InvariantCulture) { Delimiter = ";" }))
 {
@@ -22,8 +23,10 @@ using (var csv = new CsvReader(reader, new CsvConfiguration(CultureInfo.Invarian
         }
     }
 }
+Console.WriteLine("Finished reading csv...");
 var customersList = new List<Customer>();
 
+Console.WriteLine("Calling API...");
 foreach (var orgNo in orgNoList)
 {
 
@@ -35,9 +38,14 @@ foreach (var orgNo in orgNoList)
     }
 
 }
+Console.WriteLine("Finished API Calls...");
+Console.WriteLine("Number of successfully calls: " + customersList.Count);
+
+
 string csvPath = @"po-kunder-ny.csv";
+Console.WriteLine("Writing to: " + csvPath);
 using (var writer = new StreamWriter(csvPath))
 using (var csvWriter = new CsvWriter(writer, CultureInfo.InvariantCulture))
 csvWriter.WriteRecords(customersList);
+Console.WriteLine("Finished writing to csv...");
 
-Console.WriteLine(customersList.Count);

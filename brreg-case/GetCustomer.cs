@@ -8,6 +8,7 @@ namespace brregApi {
     public static class ApiHelper
     {
         public static readonly HttpClient client = new HttpClient();
+        private static readonly SemaphoreSlim semaphore = new SemaphoreSlim(2);
         public static string url = "https://data.brreg.no/enhetsregisteret/api/enheter/";
 
         public static async Task<Customer?> GetCustomerFromApi(string orgNo)
@@ -15,6 +16,8 @@ namespace brregApi {
             string apiUrl = url + orgNo;
             try
             {
+                await semaphore.WaitAsync();
+
                 HttpResponseMessage response = await client.GetAsync(apiUrl);
                 response.EnsureSuccessStatusCode();
                 
@@ -34,6 +37,9 @@ namespace brregApi {
                     _ = new Error(orgNo, (HttpStatusCode)statusCode, "Request failed");
                 }
                 return null;
+            }
+            finally {
+                semaphore.Release();
             }
         }
     }
