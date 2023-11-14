@@ -49,3 +49,50 @@ using (var csvWriter = new CsvWriter(writer, CultureInfo.InvariantCulture))
 csvWriter.WriteRecords(customersList);
 Console.WriteLine("Finished writing to csv...");
 
+
+Console.WriteLine("Reading " + csvPath);
+int single = 0;
+int other = 0;
+int smallAs = 0;
+int mediumAs = 0;
+int largeAs = 0;
+using (var reader = new StreamReader(csvPath))
+using (var csv = new CsvReader(reader, new CsvConfiguration(CultureInfo.InvariantCulture) { Delimiter = "," }))
+{
+    csv.Read();
+    csv.ReadHeader();
+    while (csv.Read())
+    {
+        var OrgCode = csv.GetField<string>("OrgCode");
+        var Employees = csv.GetField<int>("Employees");
+        if (OrgCode != null)
+        {
+            if(OrgCode == "ENK"){
+                single += 1;
+            }
+            else if (OrgCode == "AS"){
+                if (Employees > 10){
+                    largeAs += 1;
+                }
+                else if (Employees >= 5){
+                    mediumAs += 1;
+                }
+                else {
+                    smallAs += 1;
+                }
+            }
+            else {
+                other += 1;
+            }
+        }
+    }
+}
+Console.WriteLine("ENK Antall: " + single);
+Console.WriteLine("ANDRE Antall: " + other);
+Console.WriteLine("AS 0-4 ansatte Antall: " + smallAs);
+Console.WriteLine("AS 5-10 ansatte Antall: " + mediumAs);
+Console.WriteLine("AS > 10 ansatte Antall: " + largeAs);
+
+
+
+
