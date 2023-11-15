@@ -3,6 +3,7 @@ using CsvHelper.Configuration;
 using System.Globalization;
 using brregApi;
 using Customers;
+using Statistics;
 
 string filePath = Path.Combine(@"..\..\..\files\po-kunder.csv");
 
@@ -51,11 +52,6 @@ Console.WriteLine("Finished writing to csv...");
 
 
 Console.WriteLine("Reading " + csvPath);
-int single = 0;
-int other = 0;
-int smallAs = 0;
-int mediumAs = 0;
-int largeAs = 0;
 using (var reader = new StreamReader(csvPath))
 using (var csv = new CsvReader(reader, new CsvConfiguration(CultureInfo.InvariantCulture) { Delimiter = "," }))
 {
@@ -63,35 +59,15 @@ using (var csv = new CsvReader(reader, new CsvConfiguration(CultureInfo.Invarian
     csv.ReadHeader();
     while (csv.Read())
     {
-        var OrgCode = csv.GetField<string>("OrgCode");
-        var Employees = csv.GetField<int>("Employees");
-        if (OrgCode != null)
-        {
-            if(OrgCode == "ENK"){
-                single += 1;
-            }
-            else if (OrgCode == "AS"){
-                if (Employees > 10){
-                    largeAs += 1;
-                }
-                else if (Employees >= 5){
-                    mediumAs += 1;
-                }
-                else {
-                    smallAs += 1;
-                }
-            }
-            else {
-                other += 1;
-            }
+        var orgCode = csv.GetField<string>("OrgCode");
+        var employees = csv.GetField<int>("Employees");
+        if (orgCode != null){
+            Statistic.UpdateStatistics(orgCode, employees);
         }
     }
 }
-Console.WriteLine("ENK Antall: " + single);
-Console.WriteLine("ANDRE Antall: " + other);
-Console.WriteLine("AS 0-4 ansatte Antall: " + smallAs);
-Console.WriteLine("AS 5-10 ansatte Antall: " + mediumAs);
-Console.WriteLine("AS > 10 ansatte Antall: " + largeAs);
+
+Statistic.PrintStatistics();
 
 
 
