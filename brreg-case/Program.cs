@@ -40,7 +40,6 @@ foreach (var orgNo in orgNoList)
 
 }
 Console.WriteLine("Finished API Calls...");
-Console.WriteLine("Number of successfully calls: " + customersList.Count);
 
 
 string csvPath = @"po-kunder-ny.csv";
